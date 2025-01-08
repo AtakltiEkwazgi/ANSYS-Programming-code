@@ -1,0 +1,77 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found   
+/FILNAME,#2(CORNER ANGLE BRACKET),0  
+/TITLE,#2(CORNER ANGLE BRACKET)  
+KEYW,PR_STRUC,1   !
+/PREP7  !preprocessor phase
+et,1,plane82   ! element type #1; solid element 
+KEYOPT,1,3,3  ! define keypoints of the element
+KEYOPT,1,5,0
+KEYOPT,1,6,0  
+R,1,0.5,   ! real constant #1; thickness : 0.5in
+MP,EX,1,30e6   ! material property #1; Young's modulus: 30e6 Psi
+MP,PRXY,1,0.27 
+BLC4,1,3,6,2  ! rectungle corner defined
+BLC4,5,1,2,4
+FLST,2,2,5,ORDE,2   
+FITEM,2,1   
+FITEM,2,-2  
+AADD,P51X   ! the two areas of the rectangles added
+CYL4,1,4,1   ! circle coordinate defined
+CYL4,6,1,1  
+FLST,2,2,5,ORDE,2   
+FITEM,2,1   
+FITEM,2,3   
+AADD,P51X   ! all areas of the sections added
+FLST,2,2,5,ORDE,2   
+FITEM,2,2   
+FITEM,2,4   
+AADD,P51X   
+CYL4,1,4,0.4 ! small hole circles defined
+CYL4,6,1,0.4
+FLST,3,2,5,ORDE,2   
+FITEM,3,2   
+FITEM,3,-3  
+ASBA,       1,P51X  ! those small holes subtracted
+AESIZE,P51X,0.5,! select area element size 0.5 in    
+MSHAPE,0,2D    ! mesh tool defined
+MSHKEY,0       ! free mesh the element  
+CM,_Y,AREA  ! area mesh defined 
+ASEL, , , ,       4 
+CM,_Y1,AREA 
+CHKMSH,'AREA'   
+CMSEL,S,_Y    
+AMESH,_Y1     
+FLST,5,67,2,ORDE,2  
+FITEM,5,1   
+FITEM,5,-67 
+CM,_Y,ELEM  
+ESEL, , , ,P51X 
+CM,_Y1,ELEM 
+CMSEL,S,_Y  
+EREF,_Y1, , ,3,0,1,1  ! mesh tool refine defined
+/SOL    ! in the solution phase
+FLST,2,4,4,ORDE,3   
+FITEM,2,5   
+FITEM,2,7   
+FITEM,2,-9  
+DL,P51X, ,ALL,  ! define a DOF constraint at a keypoint
+FLST,2,1,4,ORDE,1   
+FITEM,2,13  
+SFL,P51X,PRES,50,500 ! define a pressure load to a line
+FLST,2,1,4,ORDE,1   
+FITEM,2,14  
+SFL,P51X,PRES,500,50
+SOLVE   ! solve the resulting system of equations
+FINISH  ! finish solution
+/POST1  ! general post processor phase
+PLDISP,1  ! Plot Deformed + undeformed shape
+PLESOL, S,EQV, 0,1.0  ! plot the vonmis stress of the element
+/VIEW,1,1,2,3  ! display the thickness of the element 
+/ANG,1  ! 3D view of the element
+/SHRINK,0   
+/ESHAPE,1.0 
+/EFACET,1   
+/RATIO,1,1,1
+/CFORMAT,32,0   
+/REPLO

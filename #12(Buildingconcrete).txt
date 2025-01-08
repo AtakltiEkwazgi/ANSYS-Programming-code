@@ -1,0 +1,218 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found   
+/FILNAME,Q12 buildin analysis,0 
+/TITLE,building analysis   
+/PREP7  ! preprocessor phase 
+ET,1,BEAM188    ! element select for the colen #1; beam188 
+ET,2,SHELL181   ! element select for the roof #2; shell 
+MP,EX,1,1.4e10  ! material property selection #1; young's modules=1.4e10N/m^2
+MP,PRXY,1,0.3    
+MP,DENS,1,2240   ! density of the material defined #1; d=2240kg/m^2
+SECTYPE,   1, BEAM, RECT, , 0 ! section of the beam defined #1; rectangular crossection 
+SECOFFSET, CENT 
+SECDATA,0.3,0.3,0,0,0,0,0,0,0,0,0,0 ! dimension of the beam crossection 
+sect,2,shell,,table     ! selection of the shell for define the thickness
+secdata, 0.25,1,0.0,3   ! thickness of the shell defined
+secoffset,MID   
+seccontrol,,,, , , ,
+K,1,,4,,                ! defining of the keypoint of the shell area  
+K,2,12,4,,  
+K,3,12,4,8, 
+K,4,0,4,8,  
+/DIST, 1 ,0.924021,1
+/REP,FAST   
+/VIEW,1,1,1,1   
+/ANG,1  
+/REP,FAST   
+FLST,2,4,3  ! selection of the keypoint to generate the area of the shell
+FITEM,2,3    ! keypoint 2 and 3 are selected
+FITEM,2,2   
+FITEM,2,1   
+FITEM,2,4   
+A,P51X       !  crossectional area throgh keypoint created
+FLST,3,4,3,ORDE,2   
+FITEM,3,1   
+FITEM,3,-4  
+KGEN,2,P51X, , , ,-4, , ,0  ! keypoint copy to the y -axis by -4
+LSTR,       4,       8      ! Defines a straight line irrespective of the active coordinate system
+LSTR,       1,       5  
+LSTR,       2,       6  
+LSTR,       3,       7  
+GPLOT   
+FLST,3,4,3,ORDE,2   
+FITEM,3,1   
+FITEM,3,-4  
+FLST,3,4,3,ORDE,2   
+FITEM,3,1   
+FITEM,3,-4  
+KGEN,2,P51X, , , ,4, , ,0 ! copied keypoints to create 2nd floor to y-axis by 4   
+LSTR,      12,       4  ! Defines a straight line irrespective of the active coordinate system
+LSTR,       9,       1  
+LSTR,      10,       2  
+LSTR,      11,       3  
+GPLOT   
+FLST,2,4,3  ! selection of the keypoints for created the area
+FITEM,2,12  
+FITEM,2,9   
+FITEM,2,10  
+FITEM,2,11  
+A,P51X     ! area created through keypoint 
+FLST,3,4,3,ORDE,2   ! selection of the keypoint for copy
+FITEM,3,9   
+FITEM,3,-12 
+KGEN,2,P51X, , , ,4, , ,0   ! keypoint copied to y-axis by 4
+GPLOT   
+LSTR,      16,      12  ! Defines a straight line irrespective of the active coordinate system
+LSTR,      13,       9  
+LSTR,      14,      10  
+LSTR,      15,      11  
+FLST,2,4,3  ! selection of keypoint to create the area in the 3rd floor
+FITEM,2,13  
+FITEM,2,14  
+FITEM,2,15  
+FITEM,2,16  
+A,P51X  ! area of the last floor created through keypoint
+FLST,5,12,4,ORDE,4  !  selection of the line for creating mesh
+FITEM,5,5   
+FITEM,5,-12 
+FITEM,5,17  
+FITEM,5,-20 
+CM,_Y,LINE  
+LSEL, , , ,P51X ! line selected for mesh
+CM,_Y1,LINE 
+CMSEL,S,_Y  
+!*   
+CMSEL,S,_Y1 
+LATT,1, ,1, , , ,1  !Associates element attributes with the selected, unmeshed lines
+CMSEL,S,_Y  
+CMDELE,_Y   
+CMDELE,_Y1  
+!*  
+FLST,5,12,4,ORDE,4  
+FITEM,5,5   
+FITEM,5,-12 
+FITEM,5,17  
+FITEM,5,-20 
+CM,_Y,LINE  
+LSEL, , , ,P51X 
+CM,_Y1,LINE 
+CMSEL,,_Y   
+!*  
+LESIZE,_Y1, , ,10, , , , ,1 ! line size control for mesh the line 
+!*  
+FLST,2,12,4,ORDE,4  
+FITEM,2,5   
+FITEM,2,-12 
+FITEM,2,17  
+FITEM,2,-20 
+LMESH,P51X  ! define line meshed  
+/SHRINK,0   !disply the multiplot
+/ESHAPE,1.0 
+/EFACET,1   
+/RATIO,1,1,1
+/CFORMAT,32,0   
+/REPLOT  
+GPLOT   
+/DIST, 1 ,1.082226,1
+/REP,FAST   
+FLST,5,3,5,ORDE,2   ! selection of the are for mesh
+FITEM,5,1   
+FITEM,5,-3  
+CM,_Y,AREA  
+ASEL, , , ,P51X ! area selected ready to mesh
+CM,_Y1,AREA 
+CMSEL,S,_Y   
+CMSEL,S,_Y1 
+AATT,       1, ,   2,       0,   2  ! area attribute selection type of the element and name of the element
+CMSEL,S,_Y  
+CMDELE,_Y   
+CMDELE,_Y1  
+FLST,2,3,5,ORDE,2   ! selection of the areas for creating size control mesh
+FITEM,2,1   
+FITEM,2,-3  
+AESIZE,P51X,1,  ! areas mesh sizecontrol with edge length
+FLST,5,3,5,ORDE,2  ! areas selected for free mesh  
+FITEM,5,1   
+FITEM,5,-3  
+CM,_Y,AREA  
+ASEL, , , ,P51X ! areas selected 
+CM,_Y1,AREA 
+CHKMSH,'AREA'   
+CMSEL,S,_Y  
+MSHKEY,1
+AMESH,_Y1   
+MSHKEY,0 ! area free mesh 
+CMDELE,_Y   
+CMDELE,_Y1  
+CMDELE,_Y2   
+FINISH  ! preprocessor finished next to solution phase
+/SOL   ! solution phse started
+/DIST, 1 ,1.082226,1
+/REP,FAST   
+/DIST, 1 ,1.082226,1
+/REP,FAST  
+/AUTO,1 
+/REP,FAST 
+FLST,2,4,3,ORDE,2   ! keypoints selected for appling the constriantes
+FITEM,2,5   
+FITEM,2,-8  
+/GO 
+DK,P51X, , , ,0,ALL, , , , , ,  ! defining of the DOF on keypoints
+ACEL,0,9.81,0,  ! applied the gravity of the earth 
+ANTYPE,0 ! selection of the analysis type
+SOLVE   
+FINISH  
+/SOLUTION   
+ANTYPE,3 
+HROPT,FULL  
+HROUT,ON
+LUMPM,0  
+EQSLV, ,0,  
+PSTRES,0 
+HARFRQ,0,100,   
+NSUBST, ,   
+KBC,0   
+HARFRQ,0,100,   
+NSUBST,100, 
+KBC,1    
+/STATUS,SOLU
+SOLVE   
+FINISH  
+/POST26 
+FILE,'Q12buildinanalysis','rst','.' 
+/UI,COLL,1  
+NUMVAR,200  
+SOLU,191,NCMIT  
+STORE,MERGE 
+PLCPLX,0
+PRCPLX,1
+FILLDATA,191,,,,1,1 
+REALVAR,191,191  
+NSOL,2,246,U,Y, UY_2,   
+STORE,MERGE 
+XVAR,1  
+PLVAR,2,
+/AXLAB,X,   
+/AXLAB,Y,   
+/GTHK,AXIS,2
+/GRTYP,0
+/GROPT,ASCAL,ON 
+/GROPT,LOGX,OFF 
+/GROPT,LOGY,ON  
+/GROPT,AXDV,1   
+/GROPT,AXNM,ON  
+/GROPT,AXNSC,1, 
+/GROPT,DIG1,4,  
+/GROPT,DIG2,3,  
+/GROPT,XAXO,0,  
+/GROPT,YAXO,0,  
+/GROPT,DIVX,
+/GROPT,DIVY,
+/GROPT,REVX,0   
+/GROPT,REVY,0   
+/GROPT,LTYP,0    
+/XRANGE,DEFAULT 
+/YRANGE,DEFAULT,,1  
+XVAR,1  
+PLVAR,2,
+

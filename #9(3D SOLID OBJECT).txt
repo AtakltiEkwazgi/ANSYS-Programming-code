@@ -1,0 +1,110 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found   
+/FILNAME,#9(3D SOLID OBJECT),0  
+/TITLE,#9(3D SOLID OBJECT)  
+/TITLE,3D SOLID OBJECT
+/PREP7   
+ET,1,SOLID187   		 !element type
+MPTEMP,,,,,,,,  
+MPTEMP,1,0  
+MPDATA,EX,1,,2e5		!material proporty
+MPDATA,PRXY,1,, 
+BLC4,0,0,50,80,-10   		 !creation rectangle
+CYL4,25,67.5,5, , , ,-10	 !cylinders
+CYL4,25,12.5,5, , , ,-10  
+FLST,3,2,6,ORDE,2   
+FITEM,3,2   
+FITEM,3,-3  
+VSBV,1,P51X    		 !substruct the cylinder from the block
+BLC4,12.5,27.5,25,25,60    	!creating block
+BLOCK,12.5,37.5,27.5,52.5,60,85,
+BLOCK,37.5,97.5,52.5,27.5,85,60,
+/VIEW,1,1,2,3 	  !isometric view
+/ANG,1  
+/REP,FAST   
+FLST,2,4,6,ORDE,2   
+FITEM,2,1   
+FITEM,2,-4  
+VGLUE,P51X				!volume glue	
+LFILLT,42,73,10, ,  		!fillet with radias 10
+LFILLT,43,74,10, ,  
+LSTR,      35,      33 	 !strieght lines
+LSTR,      36,      34
+FLST,2,3,4 			 !bottom area by line for the filllet
+FITEM,2,46  
+FITEM,2,45  
+FITEM,2,47  
+AL,P51X		
+FLST,2,3,4  			! top area by lines for the filllet
+FITEM,2,53  
+FITEM,2,54  
+FITEM,2,48  
+AL,P51X
+FLST,2,4,4 			 ! front area by lines for the fillet
+FITEM,2,48  
+FITEM,2,55  
+FITEM,2,45  
+FITEM,2,56  
+AL,P51X
+ASBL,      12,      55  
+ASBL,      33,      56 
+FLST,2,5,5,ORDE,5 		!creat volume by areas for the fillet
+FITEM,2,12  	
+FITEM,2,16  
+FITEM,2,-17 
+FITEM,2,19  
+FITEM,2,21  
+VA,P51X
+FLST,2,5,6,ORDE,4   	!volume add
+FITEM,2,1   	
+FITEM,2,-2  
+FITEM,2,5   
+FITEM,2,-7  
+VADD,P51X 	
+FLST,5,67,4,ORDE,10 
+FITEM,5,1   
+FITEM,5,-37 
+FITEM,5,39  
+FITEM,5,-56 
+FITEM,5,59  
+FITEM,5,62  
+FITEM,5,66  
+FITEM,5,-67 
+FITEM,5,69  
+FITEM,5,-76 
+CM,_Y,LINE  
+LSEL, , , ,P51X 
+CM,_Y1,LINE 
+CMSEL,,_Y   
+!*  
+LESIZE,_Y1,10, , , , , , ,1  !line size 10
+!*  
+MSHKEY,0
+MSHAPE,1,3d 
+CM,_Y,VOLU  
+VSEL, , , ,       3 
+CM,_Y1,VOLU 
+CHKMSH,'VOLU'   
+CMSEL,S,_Y  
+!*  
+VMESH,_Y1   
+!*  
+CMDELE,_Y   
+CMDELE,_Y1  
+CMDELE,_Y2    
+FINISH  
+/SOL
+ANTYPE,0
+FLST,2,4,5,ORDE,4   
+FITEM,2,9   
+FITEM,2,-10 
+FITEM,2,13  
+FITEM,2,-14  
+/GO 
+DA,P51X,ALL,
+FLST,2,1,5,ORDE,1   
+FITEM,2,36  
+/GO  
+SFA,P51X,1,PRES,10 
+/STATUS,SOLU
+SOLVE 

@@ -1,0 +1,57 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found   
+/FILNAME,#5(HARMONIC ANALYSIS),0
+/FILNAME,#5(HARMONICANALYSIS),0 
+KEYW,PR_STRUC,1 !define structural analysis type 
+/PREP7          !enters the pre-processor step 
+ET,1,BEAM188    ! use PLANE182 as element type 
+MPTEMP,1,0  !Defines a temperature table for material proper
+MPDATA,EX,1,,2e11  !define modulus elasticty    
+MPDATA,PRXY,1,,0.3  !use piosions ratio 0.3
+MPTEMP,1,0  !Defines a temperature table for material proper
+MPDATA,DENS,1,,7800 ! defines density for material one
+SECTYPE,1,BEAM,RECT, , 0 !defines beam crossection   
+SECDATA,0.01,0.01        !defines beam crossection 0.01 by 0.01m
+K, ,,,,                  !defines key point
+K, ,1,,,                 !defines key point 1
+LSTR, 1, 2               !defines straight line btween k1,2
+FLST,5,1,4,ORDE,1        !Specifies line for a picking operation   
+FITEM,5,1                !pick area 5and 1  
+CM,_Y,LINE               !Group lines
+LSEL, , , ,P51X          !select lines 
+CM,_Y1,LINE              !group lines           
+LESIZE,_Y1,0, ,100, , , , ,0.1 !defines element egde length 0.1m 
+LMESH,       1           !define meshing
+FLST,2,1,3,ORDE,1        !specify the elements for picking     
+FITEM,2,1                !pick element 2 and 1
+DK,P51X, ,0, ,0,ALL, , , , , ,!defines dof at key point  
+FLST,2,1,3,ORDE,1        !specify the elements for picking     
+FITEM,2,2                !pick element 2 and 1  
+FK,P51X,FY,-100          ! aply down ward force on key point 
+/SOL                     !enters the solution phase
+ANTYPE,3                 !defines modal analsys
+HARFRQ,0,100,            !frequency range in a harmonic analysis
+NSUBST,100,             ! number of substeps
+KBC,1                   !Loads are step changed     
+SOLVE                   !solve the analysis          
+/POST1                  !entes the poest processor phase   
+SET,LIST                !sets for list of solutions
+SET,FIRST          !list for deformed shape and undeformed shape
+PLDISP,0           !diplay deformed shape only         
+PLDISP,1           !display deformed and undeformed shape
+SET,NEXT           !sets next solver
+PLDISP,0           !diplay deformed shape only         
+PLDISP,1           !display deformed and undeformed shape
+SET,LAST           ! set last solver
+PLDISP,0           !diplay deformed shape only
+PLDISP,1           !display deformed and undeformed shape 
+/POST26            ! enters the time history post processor
+NUMVAR,200  !Specifies the number of variables allowed in POST26
+SOLU,191,NCMIT  
+PLCPLX,0    !Specifies the part of a complex variable to display
+PRCPLX,1    !Defines the output form for complex variables
+FILLDATA,191,,,,1,1  !Fills a variable by a ramp function 
+REALVAR,191,191       !defines real variable
+NSOL,2,101,U,Y, UY_2, !desplays nodal solution 
+XVAR,1                !defines variable to be displayed
+PLVAR,2,              !plots the variable

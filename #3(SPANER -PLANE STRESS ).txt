@@ -1,0 +1,47 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model 
+/FILNAME,#3(SPANER UNDER PLANE STRESS),0  
+/TITLE,#2(SPANER UNDER PLANE STRESS)  
+KEYW,PR_STRUC,1 
+/PREP7 !enters the pre-processor step   
+ET,1,PLANE182 !Use PLANE182 element   
+R,1,3,       !define thichnes of the plate 3    
+MPTEMP,1,0   !Defines a temperature table for material property 
+MPDATA,EX,1,,2e5    !define modulus elasticty 
+MPDATA,PRXY,1,,0.27 !use piosions ratio 0.27
+RECTNG,0,125,0,13,  !crate rectancle by dimension 
+CYL4,135,6.5,15     !create circle 
+FLST,2,2,5,ORDE,2  !Specifies linr for a picking operation   
+FITEM,2,1          !pick line by coordinate 2 and 1  for operation 
+FITEM,2,-2         !pick line by coordinate 2 and -2 for operation 
+AADD,P51X          !add areas by previosily selected lines
+BLC4,132,14,18,-15 !Create a rectangular area corner points
+ASBA,3,1           ! substract area 1 from area 3
+wpoff,55,0,0       !Offsets the working plane to x=55,y=0,z=0
+wprot,0,0,30       !Rotates the working plane about z=30
+ASBW,2             !divides areas in to two
+MSHAPE,0,2D        ! mesh with tetrahedral-shaped elements
+MSHKEY,0           !mesh with quadilaterial shape elements
+FLST,5,2,5,ORDE,2  !Specifies data for a picking operation   
+FITEM,5,1          !Identifies items chosen by a pick area 5 and 1 
+FITEM,5,3          !Identifies items chosen by a pick area 5 and 3 
+CM,_Y,AREA         !Group areas 
+ASEL, , , ,P51X    !select areas 
+CM,_Y1,AREA        !Group areas 
+CHKMSH,'AREA'      !check mesh areas
+CMSEL,S,_Y         !Group areas 
+AMESH,_Y1          !mesh areas 
+/SOL               !enters the solution phase
+FLST,2,3,4,ORDE,3  !  specify the lines for picking 
+FITEM,2,1          ! pick line by cordinates 2 and 1
+FITEM,2,-2         ! pick line by cordinates 2 and -2
+FITEM,2,4          ! pick line by cordinates 2 and 4
+DL,P51X, ,ALL,0  !enters the boundary conditons fixed in all direc.
+FLST,2,1,4,ORDE,1  ! specify the lines for picking 
+FITEM,2,7          ! pick line by cordinates 2 and 7
+SFL,P51X,PRES,200,  !enters the force on previosly picked 2,7 
+SOLVE  !solve the analysis       
+/POST1  !entes the poest processor phase   
+PLDISP,0 !Displays the deformed shape 
+PLDISP,1  !Displays the deformed shape and un-deformed shape 
+PLNSOL, S,EQV, 0,1.0 !Displays results as nodal solution for vonmises

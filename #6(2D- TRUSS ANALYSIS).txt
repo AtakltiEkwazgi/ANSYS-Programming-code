@@ -1,0 +1,63 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found   
+/FILNAME,#6(2D- TRUSS ANALYSIS),0   
+/TITLE,#6(2D- TRUSS ANALYSIS)   
+KEYW,PR_STRUC,1  !define structural analysis type 
+/PREP7           !preprocessor phase  
+ET,1,LINK180     !element type #1 and 2; bar element 
+r,1,200          !real constant #1; area: 200mm^2
+r,2,100          !real constant #2; area : 100mm^2
+MP,EX,1,2e5      ! material property #1&2; Young's modulus: 
+MP,PRXY,1,0.27   !use piosions ratio 0.27
+N,1,0,0,,,,,     !coordinate of the node defined
+N,2,0500,0500,,,,,  
+N,3,1000,0,,,,, 
+N,4,2000,1000,,,,,  
+TYPE,   1   
+MAT,    1  ! material type selected #1; link #1&2= material #1 
+REAL,   1  ! material type #1; real constant #1
+ESYS,       0   
+SECNUM, 
+TSHAP,LINE   
+FLST,2,2,1  ! select the node to creat the element
+FITEM,2,1   
+FITEM,2,2   
+E,P51X      ! element created on the nodes
+FLST,2,2,1  
+FITEM,2,2   
+FITEM,2,3   
+E,P51X  
+TYPE,   1   
+MAT,  1    ! material type selected #2; link #3&4= material #1 
+REAL,       2   ! material type #1; real constant #2
+ESYS,       0   
+SECNUM, 
+TSHAP,LINE   
+FLST,2,2,1  ! select the node to creat the element
+FITEM,2,3   
+FITEM,2,4   
+E,P51X  ! element created on the nodes
+FLST,2,2,1  
+FITEM,2,2   
+FITEM,2,4   
+E,P51X  
+FINISH  ! finish pre-processor
+/SOL     ! in the solution phase
+FLST,2,2,1,ORDE,2   ! select the nodes whe the constrients are applied
+FITEM,2,1   
+FITEM,2,3   
+D,P51X, , , , , ,ALL, , , , ,  ! define a DOF constraint at a node 
+FLST,2,1,1,ORDE,1   
+FITEM,2,4   
+F,P51X,FY,-10000   ! define the applied force on the node
+SOLVE   ! solve the resulting system of equations
+FINISH  ! finish solution
+/POST1    ! general post processor phase
+PLNSOL, U,SUM, 0,1.0  ! plot the deformation shape of the bar
+PLNSOL, S,EQV, 0,1.0   ! plot the vonmis stress of the element
+/SHRINK,0   ! display the shape of the element
+/ESHAPE,1.0 
+/EFACET,1   
+/RATIO,1,1,1
+/CFORMAT,32,0   
+/REPLOT 

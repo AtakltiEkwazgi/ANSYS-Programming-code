@@ -1,0 +1,175 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found   
+/FILNAME,#10(STEEL BRACKET),0  
+/TITLE,#10(STEEL BRACKET)  
+/TITLE,STEEL BRACKET
+/PREP7    
+ET,1,SOLID285   
+MPTEMP,,,,,,,,  
+MPTEMP,1,0  
+MPDATA,EX,1,,30e6   
+MPDATA,PRXY,1,,0.3  
+BLOCK,0,6,0,0.75,0,-2.25,   
+wpro,,-90.000000,   
+CYL4,1,1,0.25, , , ,0.75
+CYL4,5,1,0.25, , , ,0.75
+FLST,3,2,6,ORDE,2   
+FITEM,3,2   
+FITEM,3,-3  
+VSBV,       1,P51X  
+WPCSYS,-1   
+FLST,2,1,8  
+FITEM,2,0,0.75,-2   
+WPAVE,P51X  
+FLST,3,1,8  
+FITEM,3,0,0.75,-2   
+K, ,P51X
+FLST,3,1,8  
+FITEM,3,0,1.5,-2
+FLST,3,1,8  			!creating key points for the flange
+FITEM,3,0,0.75,-2   
+K, ,P51X
+FLST,3,1,8  
+FITEM,3,0,1.5,-2
+K, ,P51X
+FLST,3,1,8  
+FITEM,3,6,0.75,-2   
+K, ,P51X
+FLST,3,1,8  
+FITEM,3,6,4.75,-2   
+K, ,P51X
+/REPLO  
+LSTR,      27,      26  
+LSTR,      28,      29  
+LSTR,      28,      26  
+GPLOT   
+/VIEW,1,1,2,3 			  !isoetric view
+/ANG,1  
+/REP,FAST
+LANG,34,27,110, ,   		!creating inclind line
+LDELE,      36, , ,1  	!delete line
+LFILLT,33,37,0.5, , 		 !line fillet with rarius 0.5
+LFILLT,37,34,1.5, ,  		!line fillet with radius 1.5
+CYL4,4.75,1.25,0.375 		!cylinder with radius 0.375
+FLST,2,6,4  			!fill area by lines and arcs
+FITEM,2,36  
+FITEM,2,33  
+FITEM,2,37  
+FITEM,2,38  
+FITEM,2,34  
+FITEM,2,35  
+AL,P51X 
+ASBA,4,3 				 !area substract 
+FLST,2,1,5,ORDE,1   
+FITEM,2,7   
+VEXT,P51X, , ,0,0,-0.25,,,, 
+CSYS,0  
+WPAVE,0,0,0 
+CSYS,0  
+FLST,2,2,6,ORDE,2  		 !volume add
+FITEM,2,1   
+FITEM,2,4   
+VADD,P51X   
+AFILLT,7,26,0.25,   
+FLST,2,3,4  
+FITEM,2,2   
+FITEM,2,34  
+FITEM,2,71  
+AL,P51X
+FLST,2,3,4  
+FITEM,2,1   
+FITEM,2,70  
+FITEM,2,33  
+AL,P51X 
+FLST,2,5,5,ORDE,5   ! creat volume by area for the fillet
+FITEM,2,5   
+FITEM,2,7   
+FITEM,2,15  
+FITEM,2,27  
+FITEM,2,29  
+VA,P51X
+ESIZE,0.17,0,   
+MSHAPE,1,3D 
+MSHKEY,0
+!*  
+FLST,5,2,6,ORDE,2   
+FITEM,5,1   
+FITEM,5,-2  
+CM,_Y,VOLU  
+VSEL, , , ,P51X 
+CM,_Y1,VOLU 
+CHKMSH,'VOLU'   
+CMSEL,S,_Y   
+VMESH,_Y1    
+CMDELE,_Y   
+CMDELE,_Y1  
+CMDELE,_Y2   
+FINISH  
+/SOL 
+ANTYPE,0			!static analyss
+FLST,2,6,5,ORDE,6   	!aplly dissplacment
+FITEM,2,3   
+FITEM,2,9   
+FITEM,2,-10 
+FITEM,2,13  
+FITEM,2,-14 
+FITEM,2,23  
+DA,P51X,SYMM
+LOCAL,11,1,1,0.75,-1, ,-90, ,1,1,   
+NSEL,S,LOC,Z,0,0
+NSEL,R,LOC,Y,0,0.35 
+NPLOT 
+CSYS,0  
+FLST,2,5,1,ORDE,5   
+FITEM,2,11  
+FITEM,2,19  
+FITEM,2,21  
+FITEM,2,4427
+FITEM,2,4433
+D,P51X, , , , , ,UY, , , , ,
+ALLSEL,ALL  
+/REPLOT 
+LOCAL,12,1,5,0.75,-1, ,-90, ,1,1,   
+NSEL,S,LOC,Z,0,0
+NSEL,R,LOC,X,0,0.35 
+NPLOT   
+CSYS,0  
+FLST,2,108,1,ORDE,19
+FITEM,2,19  
+FITEM,2,-22 
+FITEM,2,304 
+FITEM,2,-355
+FITEM,2,4368
+FITEM,2,4390
+FITEM,2,-4392   
+FITEM,2,4397
+FITEM,2,-4400   
+FITEM,2,4427
+FITEM,2,-4442   
+FITEM,2,4451
+FITEM,2,-4458   
+FITEM,2,4463
+FITEM,2,-4466   
+FITEM,2,4471
+FITEM,2,-4474   
+FITEM,2,4483
+FITEM,2,-4494   
+D,P51X, , , , , ,UY, , , , ,
+ALLSEL,ALL  
+/REPLOT 
+FLST,2,2,5,ORDE,2   
+FITEM,2,13  
+FITEM,2,-14 
+FINISH  
+/PREP7  
+FINISH  
+/SOL
+FLST,2,4,5,ORDE,2   
+FITEM,2,19  
+FITEM,2,-22 
+F,P51X,FY,1767.5
+FLST,2,1,1,ORDE,1   
+FITEM,2,848 
+F,P51X,FX,1767.5
+/STATUS,SOLU
+SOLVE 

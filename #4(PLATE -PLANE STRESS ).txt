@@ -1,0 +1,46 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found 
+/FILNAME,#4(PLATE UNDER PLANE STRESS),0    
+/TITLE,#4(PLATE UNDER PLANE STRESS )  
+KEYW,PR_STRUC,1 !define structural analysis type 
+/PREP7          !enters the pre-processor step 
+ET,1,PLANE182   ! use PLANE182 as element type 
+R,1,1,          !define thichnes of the plate 1    
+MPTEMP,1,0  !Defines a temperature table for material proper
+MPDATA,EX,1,,2.1E5   !define modulus elasticty   
+MPDATA,PRXY,1,,0.3   !use piosions ratio 0.27
+RECTNG,0,60,0,40,    !crate rectancle by dimension  
+CYL4,30,20,10        !create circle 
+ASBA,1,2             ! substract area 2 from area 1
+FLST,2,1,5,ORDE,1    !Specifies area for a picking operation   
+FITEM,2,3            !pick area 2 and 3  
+AESIZE,P51X,6,       ! select area element size 6mm
+MSHAPE,0,2D          ! mesh with tetrahedral-shaped elements
+MSHKEY,0             !mesh with quadilaterial shape elements
+CM,_Y,AREA           !Group areas 
+ASEL, , , ,3         !select areas 
+CM,_Y1,AREA          !Group areas 
+CHKMSH,'AREA'        !check mesh areas  
+CMSEL,S,_Y           !select areas 
+AMESH,_Y1            ! mesh areas 
+/SOL                 !enters the solution phase
+FLST,2,1,4,ORDE,1    !specify the lines for picking   
+FITEM,2,4            !pick line 2 and 4
+DL,P51X, ,ALL,0      !enters the boundary conditons fixed in all direc.
+FLST,2,1,4,ORDE,1    !specify the lines for picking   
+FITEM,2,2            !pick line 2 and 2
+SFL,P51X,PRES,-50,   !enters the pressure on LINES 2,7   
+SOLVE                !solve the analysis         
+/POST1               !entes the poest processor phase   
+PLDISP,0             !Displays the deformed shape 
+PLDISP,1             !Displays the deformed and undeformed shape 
+PLNSOL, S,EQV, 0,1.0 ! nodal solution results for vonmises stress
+PATH,STRESS,4,30,50, ! define path by nodes 
+PPATH,1,0,30,0,,0,   !define path by node1,and dimension x=30,y=0
+PPATH,2,0,30,15,,0,  !define path by node2,and dimension x=30,y=15
+PPATH,3,0,30,25,,0,  !define path by node3,and dimension x=30,y=25
+PPATH,4,0,30,40,,0,  !define path by node1,and dimension x=30,y=40
+PDEF,SY,S,Y,AVG 
+PLPATH,SY            !plot path 
+
+

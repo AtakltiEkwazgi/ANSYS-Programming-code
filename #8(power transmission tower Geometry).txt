@@ -1,0 +1,147 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found
+/FILNAME,#8(power transmission tower Geometry),0  
+/TITLE,#8(power transmission tower Geometry)     
+/PREP7  !preprocessor phase 
+ET,1,LINK180   ! element type #1; link element 
+r,1,1.56e-3  ! real constant #1; thickness : 1.56*10^-3m  
+MP,EX,1,75e9   ! material property #1; Young's modulus: 75*10^9pa
+MP,PRXY,1, 
+N,1,,,,,,,  ! nodes defined here
+N,2,4,,,,,, 
+N,3,0,0,-4,,,,  
+N,4,4,0,-4,,,,  
+N,4,4,0,-4,,,,  
+N,5,0,4,0,,,,   
+N,6,4,4,0,,,,   
+N,7,0,4,-4,,,,  
+N,8,4,4,-4,,,,  
+N,9,0,8,-4,,,,  
+N,10,4,8,-4,,,, 
+/VIEW,1,1,2,3   
+/ANG,1  ! 3D view of the truss
+/REP,FAST   
+TYPE,   1   
+MAT,       1
+REAL,       1   ! appling real constant for individual elements
+ESYS,       0   
+SECNUM, 
+TSHAP,LINE  
+FLST,2,2,1  !cselecting node to creat the element
+FITEM,2,1   
+FITEM,2,2   
+E,P51X  ! creat element from one node to the next node
+FLST,2,2,1  
+FITEM,2,2   
+FITEM,2,4   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,5   
+FITEM,2,1   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,1   
+FITEM,2,3   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,3   
+FITEM,2,4   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,2   
+FITEM,2,6   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,4   
+FITEM,2,8   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,3   
+FITEM,2,7   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,7   
+FITEM,2,5   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,5   
+FITEM,2,6   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,7   
+FITEM,2,8   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,8   
+FITEM,2,6   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,8   
+FITEM,2,10  
+E,P51X  
+FLST,2,2,1  
+FITEM,2,7   
+FITEM,2,9   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,9   
+FITEM,2,10  
+E,P51X  
+FLST,2,2,1  
+FITEM,2,9   
+FITEM,2,5   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,10  
+FITEM,2,6   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,10  
+FITEM,2,5   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,9   
+FITEM,2,8   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,8   
+FITEM,2,2   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,8   
+FITEM,2,5   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,5   
+FITEM,2,2   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,7   
+FITEM,2,1   
+E,P51X  
+FLST,2,2,1  
+FITEM,2,7   
+FITEM,2,4   
+E,P51X  
+FINISH  
+/SOL
+FLST,2,4,1,ORDE,2   
+FITEM,2,1   
+FITEM,2,-4  
+D,P51X, , , , , ,UX,UY,UZ, , ,  ! define the DOF constraint at a node
+FLST,2,2,1,ORDE,2   
+FITEM,2,9   
+FITEM,2,-10   
+F,P51X,FZ,2165.0635 ! define the applied force on the noads #1; Fz=2165.0635N
+FLST,2,2,1,ORDE,2   
+FITEM,2,9   
+FITEM,2,-10  
+F,P51X,FY,-1250 
+SOLVE   ! solve the resulting system of equations
+FINISH  ! finish solution
+/POST1  ! general post processor phase  
+PLNSOL, U,SUM, 0,1.0 ! define deformation at  ech node 
+PLESOL, S,EQV, 0,1.0 ! plot the vonmis stress of the element 
+PRNSOL,U,COMP   ! deformation of nodes list result 
+PRESOL,S,PRIN   ! element struss list result 
+PRRSOL, ! reaction force list result

@@ -1,0 +1,72 @@
+KEYW,PR_SET,1   
+KEYW,PR_STRUC,1  !it is a bar structure
+KEYW,PR_THERM,0 
+KEYW,PR_FLUID,0 
+KEYW,PR_ELMAG,0 
+KEYW,MAGNOD,0   
+KEYW,MAGEDG,0   
+KEYW,MAGHFE,0   
+KEYW,MAGELC,0   
+KEYW,PR_MULTI,0   
+/PREP7  !preprocessor phase
+r,1,900 ! real constant #1; area=900mm^2
+r,2,600 ! real constant #2; area =600mm^2
+!*  
+ET,1,LINK180   ! element type #1&2;bar element
+MP,EX,1,2e5    ! material property #1; Young's modulus: 2*10^5 N/mm^2
+MP,PRXY,1,0.27 
+MP,EX,2,0.7e5  ! material property #2; Young's modulus: 0.7*10^5 N/mm^2
+MP,PRXY,2,0.27 
+N,1,,,,,,,  ! defined coordinate of the nodes 
+N,2,600,,,,,,   
+N,3,1100,,,,,,  
+TYPE,   1   
+MAT,       1 !material type selected #1; material: 1
+REAL,       1   ! real constant applied #1; real constant: 1
+ESYS,       0   
+SECNUM, 
+TSHAP,LINE   
+!*  
+FLST,2,2,1  
+FITEM,2,1   
+FITEM,2,2   
+E,P51X  ! creat elemented on the noads
+TYPE,   1   
+MAT,       2 !material type selected #2; material: 2
+REAL,       2   ! real constant applied #2; real constant: 2
+ESYS,       0   
+SECNUM, 
+TSHAP,LINE  
+!*  
+FLST,2,2,1  
+FITEM,2,2   
+FITEM,2,3   
+E,P51X        ! creat elemented on the noads
+FINISH  
+/SOL
+FLST,2,1,1,ORDE,1   
+FITEM,2,1   
+!*  
+/GO 
+D,P51X, , , , , ,ALL, , , , ,   ! define a DOF constraint at a node
+FLST,2,1,1,ORDE,1   
+FITEM,2,3   
+!*  
+/GO 
+F,P51X,FX,500   ! define the applied load force on a node
+SOLVE   ! solve the resulting system of equations
+FINISH  ! finish solution
+/POST1  ! general post processor phase
+!*    
+PLNSOL, U,SUM, 0,1.0 ! nodal deflection of the stepped bar
+!*  
+PLESOL, S,EQV, 0,1.0  ! plot the von mis stress of the element
+!*   
+PRESOL,S,PRIN   ! list result of the element struss
+PRRSOL,FX   ! reaction force of the bar
+/SHRINK,0   ! the area of the bar displye
+/ESHAPE,1.0 
+/EFACET,1   
+/RATIO,1,1,1
+/CFORMAT,32,0   
+/REPLOT 

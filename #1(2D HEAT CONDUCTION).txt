@@ -1,0 +1,35 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found
+/FILNAME,#1(2D HEAT CONDUCTION),0  
+/TITLE,#1(2D HEAT CONDUCTION)     
+KEYW,PR_THERM,1 ! define analysis type 
+/PREP7          ! enters the pre-processor step 
+ET,1,PLANE77    ! use PLANE77 element type 
+MPTEMP,1,0    !Defines a temperature table for material proper
+MPDATA,KXX,1,,401 !Defines thermal conductivity of the materia   
+RECTNG,0,10,0,20, !create rectangle origion 0,0 and x=10,y=20   
+AESIZE,ALL,0.5,   !defines the element lenght 
+MSHAPE,0,2D       !specifies the element shape for meshing
+MSHKEY,0 !        !Specifies free meshing 
+CM,_Y,AREA        !mesh the area
+ASEL, , , ,1      !select area
+CM,_Y1,AREA 
+CHKMSH,'AREA' !Checks area of previous meshes  
+CMSEL,S,_Y    !Selects a subset of components and assemblies 
+AMESH,_Y1     !Generates nodes and area elements within areas
+FLST,2,3,4,ORDE,3 !Specifies data required for a picking operation    
+FITEM,2,1  ! Identifies items by selecting lines b/n 2,1 to aply TEMP 
+FITEM,2,-2  
+FITEM,2,4    
+DL,P51X, ,TEMP,100,0 !defines degre of fredom by order(TEMPRATURE)
+FLST,2,1,4,ORDE,1   
+FITEM,2,3   
+DL,P51X, ,TEMP,200,0 
+/SOL  !entes the solution phase
+SOLVE !solve the analysis  
+/POST1 !entes the poest processor phase  
+! PLNSOL, TEMP,, 0  !Displays results as continuous contour
+! PLNSOL, TG,X, 0   
+! PLNSOL, TG,Y, 0 ! Displays results as continuous contours  
+PLNSOL, TEMP,, 0
+

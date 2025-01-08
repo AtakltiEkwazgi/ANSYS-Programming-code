@@ -1,0 +1,41 @@
+FINISH  ! Make sure we are at BEGIN level   
+/CLEAR,NOSTART  ! Clear model since no SAVE found   
+/FILNAME,#11(SOLID STEEL PLATE),0   
+/TITLE,#11(SOLID STEEL PLATE)   
+KEYW,PR_STRUC,1  !define structural analysis type   
+/PREP7           !enters the pre-processor step 
+ET,1,PLANE183    !use PLANE183 as element type  
+MPTEMP,1,0       !Defines a temperature table for material proper   
+MPDATA,EX,1,,2E5     !define modulus elasticty  
+MPDATA,PRXY,1,,0.3   !use piosions ratio 0.3
+RECTNG,0,1000,0,500, !crate rectancle by dimension  
+CYL4,500,250,100     !create circle 
+CYL4,325,250,50 
+CYL4,200,250,25 
+CYL4,675,250,50 
+CYL4,800,250,25 
+FLST,3,5,5,ORDE,2 !specify the area for picking      
+FITEM,3,2    
+FITEM,3,-6  
+ASBA,1,P51X    ! substract selected area 
+AESIZE,ALL,20, ! select area element size 20mm 
+MSHAPE,1,2D    ! mesh with tetrahedral-shaped elements
+MSHKEY,0       
+CM,_Y,AREA  
+ASEL, , , ,7 
+CM,_Y1,AREA 
+CHKMSH,'AREA'   
+CMSEL,S,_Y  
+AMESH,_Y1       !meshing      
+FLST,2,1,4,ORDE,1   
+FITEM,2,4   
+DL,P51X, ,ALL,0 ! aplly fixed boundary condition on line
+FLST,2,1,4,ORDE,1   
+FITEM,2,2    
+SFL,P51X,PRES,-1,  !aply presure online     
+/SOL              ! enter the solution phase
+SOLVE             !solve the analysis       
+/POST1              !enter the post processor phase
+PLNSOL, S,X, 0,1.0  ! nodal solution results for stres in x axis  
+PLNSOL, S,EQV, 0,1.0 ! nodal solution results for vonmises stres 
+!number of cicles;4,50,25,50,25mm in horizontal at distances of 325,200;200,250;675,250;800,250 recepectively 
